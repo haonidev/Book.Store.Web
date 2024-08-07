@@ -1,45 +1,69 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Alert, Flex, Input, Modal } from "antd";
+import { Flex, Input, Modal } from "antd";
 import { useAutorApiDetail } from "../../app/autor/hooks/useAutorApiDetail";
 import { useState, useEffect } from "react";
+import { useAutorApiUpdate } from "../../app/autor/hooks/useAutorApiUpdate";
+import { AutorUpdateModel } from "../../app/autor/models/autor-update.model";
 
 export const Route = createFileRoute("/autor/$id")({
-    component: AssuntoModalIdPage,
+	component: AssuntoModalIdPage,
 });
 
 function AssuntoModalIdPage() {
-    const navigate = useNavigate();
-    const { id } = Route.useParams();
-    const { data, isLoading, isError } = useAutorApiDetail(id);
-    const [nome, setDescricao] = useState(data?.nome || "");
+	const navigate = useNavigate();
+	const { id } = Route.useParams();
+	const { data } = useAutorApiDetail(id);
+	const [nome, setNome] = useState(data?.nome || "");
+	const { mutate, isPending } = useAutorApiUpdate({
+		onSuccess() {
+			back();
+		},
+	});
 
-    useEffect(() => {
-        if (data) {
-            setDescricao(data.nome);
-        }
-    }, [data]);
+	const [errors, setErrors] = useState<Record<string, string[]>>({});
 
+	useEffect(() => {
+		if (data) {
+			setNome(data.nome);
+		}
+	}, [data]);
 
-    function save() {
-        //mutation.mutate(nome);
-    }
+	function save() {
+		const autor = { id: Number(id), nome };
+		const { success, error, data } = AutorUpdateModel.safeParse(autor);
 
-    function back() {
-        navigate({ to: "/autor", replace: true });
-    }
+		setErrors({});
 
-    return (
-        <>
-        <Modal title="Autor" open onOk={save} onCancel={back}>
-            <Flex gap="middle" align="flex-start">
-                <pre>Descrição:</pre>
-                <Input
-                    placeholder="Basic usage"
-                    value={nome}
-                    onChange={(e) => setDescricao(e.target.value)}
-                />
-            </Flex>
-        </Modal>
-    </>
-    );
+		if (!success) {
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			setErrors(error!.flatten().fieldErrors);
+			return;
+		}
+
+		mutate(data);
+	}
+
+	function back() {
+		navigate({ to: "/autor", replace: true });
+	}
+
+	return (
+		<>
+			<Modal title="Autor" open onOk={save} onCancel={back} loading={isPending}>
+				<Flex gap="middle" align="flex-start">
+					<pre>Nome:</pre>
+					<Input
+						placeholder="Basic usage"
+						value={nome}
+						onChange={(e) => setNome(e.target.value)}
+					/>
+				</Flex>
+				{errors.descricao?.map((error) => (
+					<div key={error} style={{ color: "#c80812" }}>
+						{error}
+					</div>
+				))}
+			</Modal>
+		</>
+	);
 }

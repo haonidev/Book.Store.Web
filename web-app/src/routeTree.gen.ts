@@ -17,8 +17,11 @@ import { Route as AutorImport } from './routes/autor'
 import { Route as AssuntoImport } from './routes/assunto'
 import { Route as IndexImport } from './routes/index'
 import { Route as LivroIdImport } from './routes/livro/$id'
+import { Route as CanalCreateImport } from './routes/canal/create'
 import { Route as CanalIdImport } from './routes/canal/$id'
+import { Route as AutorCreateImport } from './routes/autor/create'
 import { Route as AutorIdImport } from './routes/autor/$id'
+import { Route as AssuntoCreateImport } from './routes/assunto/create'
 import { Route as AssuntoIdImport } from './routes/assunto/$id'
 
 // Create/Update Routes
@@ -53,14 +56,29 @@ const LivroIdRoute = LivroIdImport.update({
   getParentRoute: () => LivroRoute,
 } as any)
 
+const CanalCreateRoute = CanalCreateImport.update({
+  path: '/create',
+  getParentRoute: () => CanalRoute,
+} as any)
+
 const CanalIdRoute = CanalIdImport.update({
   path: '/$id',
   getParentRoute: () => CanalRoute,
 } as any)
 
+const AutorCreateRoute = AutorCreateImport.update({
+  path: '/create',
+  getParentRoute: () => AutorRoute,
+} as any)
+
 const AutorIdRoute = AutorIdImport.update({
   path: '/$id',
   getParentRoute: () => AutorRoute,
+} as any)
+
+const AssuntoCreateRoute = AssuntoCreateImport.update({
+  path: '/create',
+  getParentRoute: () => AssuntoRoute,
 } as any)
 
 const AssuntoIdRoute = AssuntoIdImport.update({
@@ -114,6 +132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssuntoIdImport
       parentRoute: typeof AssuntoImport
     }
+    '/assunto/create': {
+      id: '/assunto/create'
+      path: '/create'
+      fullPath: '/assunto/create'
+      preLoaderRoute: typeof AssuntoCreateImport
+      parentRoute: typeof AssuntoImport
+    }
     '/autor/$id': {
       id: '/autor/$id'
       path: '/$id'
@@ -121,11 +146,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutorIdImport
       parentRoute: typeof AutorImport
     }
+    '/autor/create': {
+      id: '/autor/create'
+      path: '/create'
+      fullPath: '/autor/create'
+      preLoaderRoute: typeof AutorCreateImport
+      parentRoute: typeof AutorImport
+    }
     '/canal/$id': {
       id: '/canal/$id'
       path: '/$id'
       fullPath: '/canal/$id'
       preLoaderRoute: typeof CanalIdImport
+      parentRoute: typeof CanalImport
+    }
+    '/canal/create': {
+      id: '/canal/create'
+      path: '/create'
+      fullPath: '/canal/create'
+      preLoaderRoute: typeof CanalCreateImport
       parentRoute: typeof CanalImport
     }
     '/livro/$id': {
@@ -142,9 +181,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  AssuntoRoute: AssuntoRoute.addChildren({ AssuntoIdRoute }),
-  AutorRoute: AutorRoute.addChildren({ AutorIdRoute }),
-  CanalRoute: CanalRoute.addChildren({ CanalIdRoute }),
+  AssuntoRoute: AssuntoRoute.addChildren({
+    AssuntoIdRoute,
+    AssuntoCreateRoute,
+  }),
+  AutorRoute: AutorRoute.addChildren({ AutorIdRoute, AutorCreateRoute }),
+  CanalRoute: CanalRoute.addChildren({ CanalIdRoute, CanalCreateRoute }),
   LivroRoute: LivroRoute.addChildren({ LivroIdRoute }),
 })
 
@@ -169,19 +211,22 @@ export const routeTree = rootRoute.addChildren({
     "/assunto": {
       "filePath": "assunto.tsx",
       "children": [
-        "/assunto/$id"
+        "/assunto/$id",
+        "/assunto/create"
       ]
     },
     "/autor": {
       "filePath": "autor.tsx",
       "children": [
-        "/autor/$id"
+        "/autor/$id",
+        "/autor/create"
       ]
     },
     "/canal": {
       "filePath": "canal.tsx",
       "children": [
-        "/canal/$id"
+        "/canal/$id",
+        "/canal/create"
       ]
     },
     "/livro": {
@@ -194,12 +239,24 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "assunto/$id.tsx",
       "parent": "/assunto"
     },
+    "/assunto/create": {
+      "filePath": "assunto/create.tsx",
+      "parent": "/assunto"
+    },
     "/autor/$id": {
       "filePath": "autor/$id.tsx",
       "parent": "/autor"
     },
+    "/autor/create": {
+      "filePath": "autor/create.tsx",
+      "parent": "/autor"
+    },
     "/canal/$id": {
       "filePath": "canal/$id.tsx",
+      "parent": "/canal"
+    },
+    "/canal/create": {
+      "filePath": "canal/create.tsx",
       "parent": "/canal"
     },
     "/livro/$id": {

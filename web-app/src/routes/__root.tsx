@@ -44,12 +44,12 @@ function Root() {
 							},
 							{
 								key: "/assunto",
-								icon: <UserOutlined />,
+								icon: <VideoCameraOutlined />,
 								label: "Assunto",
 							},
 							{
 								key: "/autor",
-								icon: <VideoCameraOutlined />,
+								icon: <UserOutlined />,
 								label: "Autor",
 							},
 							{

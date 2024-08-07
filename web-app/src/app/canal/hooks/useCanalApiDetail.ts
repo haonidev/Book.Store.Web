@@ -3,7 +3,7 @@ import { http } from "../../infra/http";
 
 interface Canal {
     id: number;
-    descricao: string;
+    nome: string;
     }
 
 export function useCanalApiDetail(id: string) {

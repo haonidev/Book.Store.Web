@@ -3,15 +3,15 @@ import { notification } from "antd";
 import { http } from "../../infra/http";
 
 
-export function useAssuntoApiDelete() {
+export function useAutorApiDelete() {
 
   const queryClient = useQueryClient();
 
 	return useMutation({
-      mutationFn: ({id}: {id: string}) => http.delete(`api/Assuntos/${id}`).json(),
+      mutationFn: ({id}: {id: string}) => http.delete(`api/Autores/${id}`).json(),
       onSuccess: () => {
         console.log('Item excluído com sucesso!');
-        queryClient.invalidateQueries({ queryKey: ['assuntos'] });
+        queryClient.invalidateQueries({ queryKey: ['autores'] });
         notification.success({
           message: 'Sucesso!',
           description: 'Item excluído com sucesso!',

@@ -1,20 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notification } from "antd";
 import { http } from "../../infra/http";
+import type { AssuntoCreateModel } from "../models/assunto-create.model";
 
-
-export function useAssuntoApiDelete() {
+export function useAssuntoApiInsert() {
 
   const queryClient = useQueryClient();
 
 	return useMutation({
-      mutationFn: ({id}: {id: string}) => http.delete(`api/Assuntos/${id}`).json(),
+      mutationFn: (assunto: AssuntoCreateModel) => http.post("api/Assuntos", { json: assunto }).json(),
       onSuccess: () => {
-        console.log('Item excluído com sucesso!');
+        console.log('Item criado com sucesso!');
         queryClient.invalidateQueries({ queryKey: ['assuntos'] });
         notification.success({
           message: 'Sucesso!',
-          description: 'Item excluído com sucesso!',
+          description: 'Item criado com sucesso!',
         });
       },
       onError: (error) => {
